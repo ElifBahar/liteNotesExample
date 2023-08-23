@@ -35,4 +35,12 @@ Route::middleware([
 
 });
 
-//git
+//// TEST ROUTELARI BAŞLANGIÇ
+///
+///
+Route::get('/masterTest',function (){
+   return view('front.layouts.master');
+});
+///
+///
+//// TEST ROUTELARI BİTİŞ
