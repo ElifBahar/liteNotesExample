@@ -14,6 +14,12 @@
     <br>
 
 
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
 
     BU SAYFADA NOTLAR LİSTELENECEK
 

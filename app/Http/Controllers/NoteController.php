@@ -35,12 +35,42 @@ class NoteController extends Controller
         //dd( Auth::id() );
 
 
-        // validasyon
+        //validation doğrulama
+
+       $request->validate(
+            [
+                // 'doğrulamakİstediğimKey' => 'Kurallarım'
+                // 'title' => 'Zorunlu, Minimum 3 karakter'
+
+                'title' => 'required | min:13 | max:20',
+                'content' => 'required '
+
+            ],[
+                //custom message
+                // keyAdı.kuralAdı => 'Mesaj',
+                'title.required' => 'Başlık yazmayı unutma',
+                'title.min' => 'Lütfen daha uzun yaz'
+           ]
+        ); // true false
+
+
+        //laravel otomatik olarak errors gönderir
+        //eğer validate kısmında hata varsa
+        //          return redirect()->back()->with('errors','message');
+
+
+        // validasyondan geçtiyse
         $note = new Note();
         $note->user_id = Auth::user()->id;
         $note->title = $request->title;
         $note->content = $request->content;
         $note->save();
+
+        //return redirect()->back();
+
+        //başarılı durum
+        return redirect()->route('notes_index')->with('success','Başarıyla Kaydedildi');
+
 
 
     }
