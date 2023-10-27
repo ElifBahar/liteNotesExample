@@ -6,7 +6,10 @@ use App\Models\Note;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 use Mockery\Matcher\Not;
+use Yajra\DataTables\DataTables;
 
 class NoteController extends Controller
 {
@@ -43,6 +46,48 @@ class NoteController extends Controller
     }
 
 
+    public function indexYajra(){
+
+        return view('front.notes.indexYajra');
+    }
+
+    public function fetchNotes()
+    {
+
+        $notes = Note::get();
+
+        return DataTables::of($notes)
+            ->addColumn('detail', function ($note) {
+                return '<a class="btn btn-success" href="' . route('notes_update', $note->id) . '">GÜNCELLE</a>';
+            })
+            ->rawColumns(['detail'])
+            ->make();
+        //sutunEkle
+        //->addColumn()
+
+    }
+
+
+
+        /*
+        return DataTables::of($companies)
+            ->addColumn('detail', function ($data) {
+                return '<a class="btn btn-info" href="' . route('companyDetail', [$data->id]) . '">' . 'Detay</a>';
+            })
+            ->addColumn('update', function ($data) {
+                return "<a href='".route('companyUpdatePage',$data->id)."' class='btn btn-warning'>Güncelle</a>";
+            })
+            ->addColumn('delete', function ($data) {
+                return "<button onclick='deleteCompany(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
+            })
+            ->addIndexColumn()
+            ->rawColumns(['detail', 'update', 'delete'])->make();
+        */
+
+
+    }
+
+
     public function createPage(){
         return view('front.notes.create');
     }
@@ -70,13 +115,14 @@ class NoteController extends Controller
                 // 'title' => 'Zorunlu, Minimum 3 karakter'
 
                 'title' => 'required | min:13 | max:20',
-                'content' => 'required '
+                'content' => 'required | min:12'
 
             ],[
                 //custom message
                 // keyAdı.kuralAdı => 'Mesaj',
                 'title.required' => 'Başlık yazmayı unutma',
-                'title.min' => 'Lütfen daha uzun yaz'
+                'title.min' => 'Lütfen başlığı daha uzun yaz',
+                'content.min' => 'İçerik 12 karakter olmalıdır'
            ]
         ); // true false
 
@@ -87,35 +133,48 @@ class NoteController extends Controller
 
 
         // validasyondan geçtiyse
+
         $note = new Note();
         $note->user_id = Auth::user()->id;
         $note->title = $request->title;
         $note->content = $request->content;
+        $note->uuid = Str::uuid();
         $note->save();
 
+
         /*
+
         Note::create([
            'user_id' => Auth::user()->id,
-           'title' => $request->title
+           'title' => $request->title,
+            'content' => $request->content,
         ]);
-        */
 
+        //bulk
+*/
         //return redirect()->back();
 
         //başarılı durum
         return redirect()->route('notes_index')->with('success','Başarıyla Kaydedildi');
 
+        //return to_route('notes_index');
 
 
     }
 
-    public function detail1($notID){
+    public function detail1(Note $not){
         // notlar tablosundaki id si #notID olan veriyi getir
 
         //query
-        //$not = Note::where('id',$notID)->first();
+        //$not = Note::where('uuid',$notUUID)->first();
 
-        $not = Note::find($notID);
+        //$not = Note::find($notID);
+
+       // if($not->user_id != Auth::user()->id){
+         //   abort(403);
+       // }
+
+
 
 
         return view('front.notes.detail1',compact('not'));

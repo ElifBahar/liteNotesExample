@@ -41,14 +41,18 @@ Route::middleware(['auth:sanctum',config('jetstream.auth_session'),'verified',])
     */
 
 
+    // YAJRA DATATABLE
+
 // Note Routeları
 
     Route::get('/notes',[NoteController::class, 'index'])->name('notes_index');
+    Route::get('/notesYajra',[NoteController::class, 'indexYajra'])->name('notes_indexYajra');
+    Route::get('/fetchNotes', [NoteController::class, 'fetchNotes'])->name('fetchNotes');
     Route::get('/notes/createPage',[NoteController::class, 'createPage'])->name('notes_createPage'); //create
     Route::post('/notes/addNote',[NoteController::class, 'addNote'])->name('notes_addNote'); //store
 
     //PARAMETRELİ DETAY
-    Route::get('/notes/detail/{note_id}',[NoteController::class, 'detail1'])->name('notes_detail1');
+    Route::get('/notes/detail/{bahar}',[NoteController::class, 'detail1'])->name('notes_detail1');
     //PARAMETERSİZ
     //!!!!!Route::get('/notes/detail/',[NoteController::class, 'detailNoParam'])->name('notes_detailNoParam');
 
