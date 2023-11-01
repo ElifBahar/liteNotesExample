@@ -51,6 +51,8 @@ Route::middleware(['auth:sanctum',config('jetstream.auth_session'),'verified',])
     Route::get('/notes/createPage',[NoteController::class, 'createPage'])->name('notes_createPage'); //create
     Route::post('/notes/addNote',[NoteController::class, 'addNote'])->name('notes_addNote'); //store
 
+    Route::post('/deleteNoteAjax',[NoteController::class, 'deleteNoteAjax'])->name('deleteNoteAjax'); //store
+
     //PARAMETRELİ DETAY
     Route::get('/notes/detail/{bahar}',[NoteController::class, 'detail1'])->name('notes_detail1');
     //PARAMETERSİZ

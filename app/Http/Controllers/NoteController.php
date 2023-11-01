@@ -47,7 +47,6 @@ class NoteController extends Controller
 
 
     public function indexYajra(){
-
         return view('front.notes.indexYajra');
     }
 
@@ -55,12 +54,15 @@ class NoteController extends Controller
     {
 
         $notes = Note::get();
-
         return DataTables::of($notes)
             ->addColumn('detail', function ($note) {
                 return '<a class="btn btn-success" href="' . route('notes_update', $note->id) . '">GÜNCELLE</a>';
             })
-            ->rawColumns(['detail'])
+            ->addColumn('delete',function ($note){
+                //return 'bahar' . $note->id  . 'elif';   //bahar3elif
+                return '<button class="btn btn-danger" onclick="ddd('.$note->id.')">Sil</button>';
+            })
+            ->rawColumns(['detail','delete'])
             ->make();
         //sutunEkle
         //->addColumn()
@@ -70,6 +72,10 @@ class NoteController extends Controller
 
 
         /*
+         *
+         * ->addColumn('delete', function ($data) {
+                return "<button onclick='deleteCompany(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
+            })
         return DataTables::of($companies)
             ->addColumn('detail', function ($data) {
                 return '<a class="btn btn-info" href="' . route('companyDetail', [$data->id]) . '">' . 'Detay</a>';
@@ -85,7 +91,49 @@ class NoteController extends Controller
         */
 
 
+    function deleteNoteAjax(Request $request){
+
+        $request->validate([
+            'id' => 'required'
+        ]);
+
+        //Note::where('id',id)->first();
+        $note = Note::find($request->id);
+        $note->delete();
+
+        return response()->json(['success' => 'Başarılı']);
+/*
+        if($note != null){
+
+            $note->delete();
+
+            if($note->delete()){
+                return response()->json(['success' => 'Başarılı']);
+
+            }else{
+                return response()->json(['error' => 'Hata']);
+
+            }
+
+        }else{
+            return response()->json(['error' => 'Hata']);
+
+        }
+*/
     }
+
+
+
+
+    function companyDelete(Request $request)
+    {
+        $request->validate([
+            'id' => 'distinct'
+        ]);
+        Company::find($request->id)->delete();
+        return response()->json(['Success' => 'success']);
+    }
+
 
 
     public function createPage(){

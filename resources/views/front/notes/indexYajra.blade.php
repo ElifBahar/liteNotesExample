@@ -16,6 +16,7 @@
                     <th>ID</th>
                     <th>TITLE</th>
                     <th>DETAIL</th>
+                    <th>DELETE</th>
                 </tr>
             </thead>
 
@@ -28,6 +29,8 @@
                     <th>ID</th>
                     <th>TITLE</th>
                     <th>DETAIL</th>
+                    <th>DELETE</th>
+
                 </tr>
             </tfoot>
         </table>
@@ -37,6 +40,7 @@
 @endsection
 
 @section('script')
+
 
     <script type="text/javascript">
 
@@ -70,13 +74,52 @@
                 {data: 'id'},
                 {data: 'title'},
                 {data: 'detail'},
+                {data: 'delete'},
 
             ]
         });
 
 
 
+        function ddd(id){
+            $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-TOKEN': "{{csrf_token()}} "},
+                url: '{!! route('deleteNoteAjax') !!}',
+                data: {
+                    id: id
+                },
+                dataType: "json",
+
+                success: function (response) {
+                    console.log(response)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Başarılı",
+                        html: response.success,
+                        showConfirmButton: true,
+                        confirmButtonText: "Tamam"
+                    });
+                    dataTable.ajax.reload();
+                },
+
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Hata!",
+                        html: "Silme Başarısız",
+                        showConfirmButton: true,
+                        confirmButtonText: "Tamam"
+                    });
+                }
+            });
+        }
+
 
     </script>
+
+
+
+
 
 @endsection
